@@ -2,7 +2,11 @@ module request
 
 import net.http
 
-pub fn (u URL) read() (string,http.Header) {
+struct Response{
+	body string
+	header http.Header
+}
+pub fn (u URL) read() Response {
 	request_str:= match u.port==0 {
 		true {
 			'${u.scheme}://${u.host}/${u.path}'
@@ -14,5 +18,11 @@ pub fn (u URL) read() (string,http.Header) {
 	println(request_str)
 	data := http.get(request_str) or {panic(err)}
     
-	return data.body, data.header
+	return Response{
+		body: data.body
+		header: data.header
+	}
+}
+pub fn (r Response) print() {
+	println("${r.body[0..100]}\n\n...\n\nHeaders:${r.header}")
 }

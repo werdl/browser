@@ -4,5 +4,6 @@ import request
 
 fn main() {
 	x:=request.new("http://www.example.com")
-	println(x.read())
+	r:=x.read()
+	r.print()
 }
