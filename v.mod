@@ -3,5 +3,5 @@ Module {
 	description: ''
 	version: ''
 	license: ''
-	dependencies: []
+	dependencies: ["RGBCube.color"]
 }

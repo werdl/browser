@@ -2,21 +2,25 @@ module request
 
 import net.http
 
-struct Response{
-	body string
-	header http.Header
-	code int
-	msg string
-	version string
+pub struct Response{
+	pub:
+		body string
+		header http.Header
+		code int
+		msg string
+		version string
 }
 pub fn (u URL) read() Response {
-	request_str:= match u.port==0 {
+	mut request_str:= match u.port==0 {
 		true {
 			'${u.scheme}://${u.host}/${u.path}'
 		} 
 		false {
 			'${u.scheme}://${u.host}:${u.port}/${u.path}'
 		}
+	}
+	if u.scheme=="https" {
+		request_str='${u.scheme}://${u.host}:443/${u.path}'
 	}
 	data := http.get(request_str) or {panic(err)}
     
@@ -35,16 +39,4 @@ pub fn (r Response) print() {
 		max=first_n.len
 	}
 	println("${r.code} - ${r.msg} from server ${r.version}\n${first_n[0..max].join_lines()}\n\n...\n\nHeaders:${r.header}")
-}
-pub fn (r Response) show() {
-	mut in_angle:=false
-	for c in r.body {
-		if r.body[c]=="<" {
-			in_angle=true
-		} else if (r.body[c])==">" {
-			in_angle=false
-		} else if !in_angle {
-			print(r.body[c])
-		}
-	}
 }
