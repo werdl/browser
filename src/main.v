@@ -3,7 +3,7 @@ module main
 import request
 import render
 fn main() {
-	x:=request.new("https://browser.engineering")
+	x:=request.new("https://example.com")
 	r:=x.read()
 	r.print()
 
