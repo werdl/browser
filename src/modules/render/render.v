@@ -17,10 +17,11 @@ pub fn new(data string) DOM {
 }
 const dont_show:=["style","meta","script","title"]
 const nl_shows:=["h1","h2","h3","h4","h5","h6"]
+const pre_nl_shows:=["section"]
 
 fn text_tag(tag html.Tag) {
 	// tags_to_show:=["p","h1","h2","h3","h4","h5","h6","a"]
-	if tag.children.len==0 && tag.name !in dont_show {
+	if (tag.children.len==0 && tag.name !in dont_show) || (tag.children.len==1 && tag.name=="p") {
 		x:=tag.content
 		mut in_amp:=false
 		mut ret:=[]rune{}
@@ -37,6 +38,10 @@ fn text_tag(tag html.Tag) {
 			}
 		}
 		print(ret.string())
+	} else if tag.children.len==1 && tag.name=="li" {
+		print("\n")
+	} else if tag.name=="ol" {
+		print("\n")
 	}
 }
 
@@ -71,12 +76,12 @@ pub fn (d DOM) show() (int, []string) {
 		// println(tag.text())
 		match tag.name {
 			"a" {
-				print(" (${max}) ")
+				print(" (${max})")
 				prnt(RGB{
 					r: 0
 					b: 139
 					g: 139
-				}, "${tag.content} ")
+				}, "${tag.content}")
 				max+=1
 				hrefs << tag.attributes["href"]
 			}
@@ -87,14 +92,36 @@ pub fn (d DOM) show() (int, []string) {
 				}
 				
 			}
+			"br" {
+				print("\n")
+			}
 			else {
-				if tag.name !in dont_show {
-					text_tag(tag)
+				match tag.name {
+					"p" {
+						print(" ")
+					} else {}
 				}
+				// unsafe {
+				// 	if tag.parent!=nil && tag.parent.parent!=nil && tag.parent.parent.parent!=nil{
+				// 		if tag.parent.parent.parent.name in pre_nl_shows {
+				// 			print("\n")
+				// 		}	
+				// 	}
+				// }
 				if tag.name in nl_shows {
 					print("\n")
 				}
-				
+				if tag.name !in dont_show {
+					text_tag(tag)
+				}
+				// if tag.name in nl_shows {
+				// 	print("\n")
+				// }
+				match tag.name {
+					"p" {
+						print(" ")
+					} else {}
+				}
 			}
 		}
 		
