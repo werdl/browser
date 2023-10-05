@@ -14,9 +14,7 @@ fn gen_list(max int) []string {
 fn read_site(s string) {
 	x:=request.new(s)
 	r:=x.read()
-	r.print()
-
-	
+	r.print_short()
 	e:=render.new(r.body)
 	max, hrefs:=e.show()
 	for {

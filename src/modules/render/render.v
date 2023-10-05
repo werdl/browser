@@ -2,7 +2,7 @@ module render
 
 import net.html
 import term
-
+import arrays
 
 struct DOM {
 	dom html.DocumentObjectModel
@@ -15,26 +15,29 @@ pub fn new(data string) DOM {
 		data: data
 	}
 }
+const dont_show:=["style","meta","script","title"]
+const nl_shows:=["h1","h2","h3","h4","h5","h6"]
 
-fn text_tag(tag html.Tag) string {
+fn text_tag(tag html.Tag) {
 	// tags_to_show:=["p","h1","h2","h3","h4","h5","h6","a"]
-	dont_show:=["style","meta","script","title"]
 	if tag.children.len==0 && tag.name !in dont_show {
-		x:=tag.text()
+		x:=tag.content
 		mut in_amp:=false
-		mut ret:=""
+		mut ret:=[]rune{}
 		for c in x.runes() {
 			if c==`&` {
 				in_amp=true
 			} else if c==`;` {
 				in_amp=false
 			} else if !in_amp {
-				ret+=c.str()
+				if arrays.uniq(x.runes())!=[`\n`,` `] {
+					ret << c
+				}
+				
 			}
 		}
-		return ret
+		print(ret.string())
 	}
-	return ""
 }
 
 struct RGB {
@@ -48,8 +51,6 @@ fn prnt(rgb RGB, s string) {
 }
 
 pub fn (d DOM) show() (int, []string) {
-	
-	tags:=d.dom
 	mut hrefs:=[]string{}
 	// println(d.dom)
 	mut max:=0
@@ -70,12 +71,12 @@ pub fn (d DOM) show() (int, []string) {
 		// println(tag.text())
 		match tag.name {
 			"a" {
-				print("\n${max} ")
+				print(" (${max}) ")
 				prnt(RGB{
 					r: 0
 					b: 139
 					g: 139
-				}, "${tag.text()}\n")
+				}, "${tag.content} ")
 				max+=1
 				hrefs << tag.attributes["href"]
 			}
@@ -87,7 +88,13 @@ pub fn (d DOM) show() (int, []string) {
 				
 			}
 			else {
-				print("${text_tag(tag)}")
+				if tag.name !in dont_show {
+					text_tag(tag)
+				}
+				if tag.name in nl_shows {
+					print("\n")
+				}
+				
 			}
 		}
 		

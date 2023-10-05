@@ -22,7 +22,7 @@ pub fn (u URL) read() Response {
 	if u.scheme=="https" {
 		request_str='${u.scheme}://${u.host}:443/${u.path}'
 	}
-	data := http.get(request_str) or {panic(err)}
+	data := http.get(request_str) or { panic(err) }
     
 	return Response{
 		body: data.body
@@ -39,4 +39,7 @@ pub fn (r Response) print() {
 		max=first_n.len
 	}
 	println("${r.code} - ${r.msg} from server ${r.version}\n${first_n[0..max].join_lines()}\n\n...\n\nHeaders:${r.header}")
+}
+pub fn (r Response) print_short() {
+	println("${r.code} - ${r.msg}")
 }
