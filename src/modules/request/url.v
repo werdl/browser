@@ -1,4 +1,5 @@
 module request
+import os
 struct URL {
     scheme string
 	host string
@@ -21,7 +22,10 @@ pub fn new(urlraw string) URL {
 	}
 	valid_schemes:=["http","https"]
 	if scheme_v !in valid_schemes {
-		println("${scheme_v} is not recognised as a valid scheme. defaulting to http.")
+		if "--debug" in os.args {
+			println("${scheme_v} is not recognised as a valid scheme. defaulting to http.")
+		}
+		
 		scheme_v="http"
 	}
 	if path_v!="" {

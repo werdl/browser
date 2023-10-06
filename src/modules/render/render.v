@@ -126,5 +126,6 @@ pub fn (d DOM) show() (int, []string) {
 		}
 		
 	}
+	print("\n")
 	return max, hrefs
 }

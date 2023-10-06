@@ -30,5 +30,11 @@ fn read_site(s string) {
 	}
 }
 fn main() {
+	inp:=os.input("> ")
+	if inp=="q" {
+		exit(0)
+	} else {
+		read_site(inp)
+	}
 	read_site("https://browser.engineering")
 }

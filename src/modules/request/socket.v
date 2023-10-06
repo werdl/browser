@@ -10,6 +10,9 @@ pub struct Response{
 		msg string
 		version string
 }
+fn (u URL) handle(request_str string) {
+	println("${request_str} was met with an error. Ensure this is the right domain.")
+}
 pub fn (u URL) read() Response {
 	mut request_str:= match u.port==0 {
 		true {
@@ -22,7 +25,10 @@ pub fn (u URL) read() Response {
 	if u.scheme=="https" {
 		request_str='${u.scheme}://${u.host}:443/${u.path}'
 	}
-	data := http.get(request_str) or { panic(err) }
+	data := http.get(request_str) or { 
+		u.handle(request_str)
+		return Response{}
+	}
     
 	return Response{
 		body: data.body
@@ -41,5 +47,7 @@ pub fn (r Response) print() {
 	println("${r.code} - ${r.msg} from server ${r.version}\n${first_n[0..max].join_lines()}\n\n...\n\nHeaders:${r.header}")
 }
 pub fn (r Response) print_short() {
-	println("${r.code} - ${r.msg}")
+	if r.code!=0 {
+		println("${r.code} - ${r.msg}")
+	}
 }
